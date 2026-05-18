@@ -1,38 +1,28 @@
 """
-agents/analyst_agent.py
+Analyst agent.
 
-Generates a grounded answer using ONLY the retrieved policy context.
-The system prompt explicitly forbids the model from using outside knowledge,
-which is the core safety property of a RAG-based enterprise assistant.
+Generates a policy answer using only the retrieved policy context.
 """
 
 from dataclasses import dataclass
-from utils.openai_helper import chat_completion
+
 from agents.retriever_agent import PolicyChunk
+from utils.openai_helper import chat_completion
+
 
 SYSTEM_PROMPT = """You are an enterprise policy analyst assistant.
 
-Your task is to answer the user's question using ONLY the policy text provided below.
+Answer the user's question using ONLY the policy context provided.
 
-STRICT RULES:
-- Do not use any knowledge outside of the provided policy context.
-- If the policy context does not contain enough information to answer confidently, say so explicitly.
-- Do not speculate or infer beyond what is written in the policy.
-- Cite the relevant section or rule when possible (e.g. "Per Section 1.3 of the Refund Policy...").
-- Be concise but complete. A few clear sentences are better than a long vague answer.
-- If the answer has conditions (e.g. dollar thresholds, approval levels), state them clearly.
+Rules:
+- Do not use outside knowledge.
+- If the provided context is not enough, say that clearly.
+- Do not speculate beyond the policy text.
+- Mention the relevant policy section or rule when available.
+- Keep the answer concise, practical, and easy for an employee to understand.
+- If thresholds, approvals, timelines, or escalation rules apply, state them clearly.
 
-Your answer will be reviewed by a critic agent before it reaches the user."""
-
-
-def _build_context(chunks: list[PolicyChunk]) -> str:
-    """Format retrieved chunks into a numbered context block for the prompt."""
-    lines = []
-    for i, chunk in enumerate(chunks, 1):
-        lines.append(f"[Source {i}: {chunk.source_file}]")
-        lines.append(chunk.content)
-        lines.append("")   # blank line separator
-    return "\n".join(lines)
+Your answer will be checked by a critic agent before it is shown to the user."""
 
 
 @dataclass
@@ -42,26 +32,30 @@ class AnalystResult:
     error: str = ""
 
 
+def _build_context(chunks: list[PolicyChunk]) -> str:
+    """Format retrieved chunks for the LLM prompt."""
+    lines = []
+
+    for index, chunk in enumerate(chunks, 1):
+        lines.append(f"[Source {index}: {chunk.source_file}]")
+        lines.append(chunk.content)
+        lines.append("")
+
+    return "\n".join(lines)
+
+
 def run(user_query: str, chunks: list[PolicyChunk]) -> AnalystResult:
-    """
-    Produce a grounded policy answer from the retrieved chunks.
-
-    Args:
-        user_query: The original question from the user.
-        chunks:     Relevant policy sections returned by the Retriever agent.
-
-    Returns:
-        An AnalystResult containing the draft answer and the context that was used.
-    """
+    """Create a grounded draft answer from retrieved policy chunks."""
     if not chunks:
-        return AnalystResult(error="No context available — cannot generate an answer.")
+        return AnalystResult(error="No policy context was found, so an answer cannot be generated.")
 
     try:
         context = _build_context(chunks)
+
         user_message = (
             f"POLICY CONTEXT:\n{context}\n\n"
-            f"USER QUESTION: {user_query}\n\n"
-            f"Answer the question using only the policy context above."
+            f"USER QUESTION:\n{user_query}\n\n"
+            "Answer the question using only the policy context above."
         )
 
         answer = chat_completion(
@@ -72,4 +66,4 @@ def run(user_query: str, chunks: list[PolicyChunk]) -> AnalystResult:
         return AnalystResult(answer=answer, context_used=context)
 
     except Exception as exc:
-        return AnalystResult(error=f"Analyst agent failed: {str(exc)}")
+        return AnalystResult(error=f"Analyst agent failed: {exc}")
