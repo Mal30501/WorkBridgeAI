@@ -1,33 +1,33 @@
 """
-agents/critic_agent.py
+Critic agent.
 
-Reviews the Analyst's draft answer against the retrieved policy context.
-Flags hallucinations, unsupported claims, or low-confidence responses
-so the Final Response Agent can adjust tone and add appropriate caveats.
+Reviews the analyst's draft answer against the retrieved policy context.
 """
 
 from dataclasses import dataclass
+
 from utils.openai_helper import chat_completion
+
 
 SYSTEM_PROMPT = """You are a quality assurance critic for an enterprise AI policy assistant.
 
-Your job is to evaluate a draft answer against the source policy context that was used to generate it.
+Evaluate the draft answer against the source policy context.
 
-You must assess:
-1. GROUNDING: Is every factual claim in the answer directly supported by the policy context?
-2. ACCURACY: Are dollar amounts, roles, thresholds, and rules stated correctly?
-3. COMPLETENESS: Does the answer address all parts of the user's question?
-4. CONFIDENCE: How confident should we be in this answer? (HIGH / MEDIUM / LOW)
+Check:
+1. GROUNDING: Is every factual claim supported by the policy context?
+2. ACCURACY: Are thresholds, roles, timelines, and policy rules correct?
+3. COMPLETENESS: Does the answer address the user's question?
+4. CONFIDENCE: Should the system present this as HIGH, MEDIUM, or LOW confidence?
 
-Output format — respond ONLY with this structure:
+Respond ONLY in this structure:
 GROUNDING: [Supported / Partially Supported / Not Supported]
 ACCURACY: [Accurate / Minor Issues / Major Issues]
 COMPLETENESS: [Complete / Partial / Incomplete]
 CONFIDENCE: [HIGH / MEDIUM / LOW]
-ISSUES: [One-line description of any specific problems found, or "None"]
+ISSUES: [One-line issue summary, or "None"]
 RECOMMENDATION: [APPROVE / APPROVE WITH CAVEAT / REVISE]
 
-Be brief and precise. Do not reproduce the answer or context."""
+Be brief and precise. Do not repeat the full answer or policy context."""
 
 
 @dataclass
@@ -43,42 +43,37 @@ class CriticResult:
 
     @property
     def approved(self) -> bool:
-        return "APPROVE" in self.recommendation   # catches both APPROVE and APPROVE WITH CAVEAT
+        normalized = self.recommendation.strip().upper()
+        return normalized in {"APPROVE", "APPROVE WITH CAVEAT"}
 
     @property
     def needs_caveat(self) -> bool:
-        return self.recommendation == "APPROVE WITH CAVEAT"
+        return self.recommendation.strip().upper() == "APPROVE WITH CAVEAT"
 
 
 def _parse_critic_output(raw: str) -> dict[str, str]:
-    """Parse the structured critic output into a key-value dict."""
+    """Parse the critic output into simple key-value fields."""
     fields = {}
+
     for line in raw.splitlines():
-        if ":" in line:
-            key, _, value = line.partition(":")
-            fields[key.strip().upper()] = value.strip()
+        if ":" not in line:
+            continue
+
+        key, _, value = line.partition(":")
+        fields[key.strip().upper()] = value.strip()
+
     return fields
 
 
 def run(user_query: str, draft_answer: str, context_used: str) -> CriticResult:
-    """
-    Validate the draft answer against the retrieved policy context.
-
-    Args:
-        user_query:    The original user question.
-        draft_answer:  The Analyst agent's proposed answer.
-        context_used:  The raw policy text that was passed to the Analyst.
-
-    Returns:
-        A CriticResult with structured quality fields and an overall recommendation.
-    """
+    """Validate the draft answer against the retrieved policy context."""
     if not draft_answer:
-        return CriticResult(error="No draft answer to critique.")
+        return CriticResult(error="No draft answer was provided for review.")
 
     try:
         user_message = (
             f"POLICY CONTEXT USED:\n{context_used}\n\n"
-            f"USER QUESTION: {user_query}\n\n"
+            f"USER QUESTION:\n{user_query}\n\n"
             f"DRAFT ANSWER TO EVALUATE:\n{draft_answer}"
         )
 
@@ -100,4 +95,4 @@ def run(user_query: str, draft_answer: str, context_used: str) -> CriticResult:
         )
 
     except Exception as exc:
-        return CriticResult(error=f"Critic agent failed: {str(exc)}")
+        return CriticResult(error=f"Critic agent failed: {exc}")
