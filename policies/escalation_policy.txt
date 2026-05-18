@@ -1,0 +1,102 @@
+CASE ESCALATION & COMPLIANCE REFERRAL POLICY
+Version: 1.8 | Effective Date: February 1, 2024
+Department: Customer Operations & Compliance
+
+---
+
+SECTION 1: OVERVIEW AND PURPOSE
+
+This policy defines when and how customer cases must be escalated within the support organization, and when cases must be referred to the Compliance department. Proper escalation ensures that high-risk, complex, or legally sensitive situations are handled by the appropriate personnel.
+
+---
+
+SECTION 2: STANDARD ESCALATION TRIGGERS (TIER 1 → TIER 2)
+
+A Tier 1 Support agent must escalate a case to Tier 2 when any of the following conditions are met:
+  - The customer has contacted support 3 or more times for the same unresolved issue
+  - The issue involves a technical failure affecting more than one account
+  - The customer explicitly requests to speak with a supervisor or manager
+  - The resolution requires system-level access beyond Tier 1 permissions
+  - The case involves a billing dispute greater than $200
+
+---
+
+SECTION 3: ESCALATION TO CUSTOMER OPERATIONS MANAGEMENT
+
+Tier 2 agents must escalate to a Customer Operations Manager when:
+  - A refund or credit request exceeds $500 (per Refund Policy Section 1.3)
+  - The customer threatens legal action, chargebacks, or regulatory complaints
+  - The case has been open for more than 7 business days without resolution
+  - A Tier 2 agent is uncertain how to proceed and no other senior agent is available
+  - The issue involves a VIP or enterprise account
+
+---
+
+SECTION 4: MANDATORY COMPLIANCE ESCALATION
+
+The following situations REQUIRE immediate escalation to the Compliance Department. Agents must not attempt to resolve these independently:
+
+4.1 Legal and Regulatory Triggers
+  - Any customer or third party claims a legal right (e.g., GDPR Subject Access Request, CCPA deletion request, court order, subpoena)
+  - Any request from law enforcement or government agency for customer data
+  - A customer alleges discrimination, ADA accommodation issues, or civil rights violations
+
+4.2 Data and Privacy Triggers
+  - A suspected or confirmed data breach or unauthorized PII disclosure
+  - A customer reports receiving another customer's information
+  - An agent discovers that Sensitive PII (SSN, financial account numbers) was stored or shared improperly
+  - A third-party vendor reports a security incident affecting company data
+
+4.3 Financial Crime Triggers
+  - Suspected fraud, money laundering, or identity theft
+  - Unusual patterns of refund requests from the same customer or account cluster
+  - Customer account flagged by Trust & Safety team
+
+4.4 Reputational or Media Risk
+  - A customer identifies themselves as a journalist, regulator, or public figure
+  - A case is related to an active litigation or known regulatory investigation
+  - Social media escalation involving public complaints tied to a specific case
+
+---
+
+SECTION 5: HOW TO ESCALATE TO COMPLIANCE
+
+Step 1: Do not make any commitments or statements to the customer about the outcome.
+Step 2: Inform the customer that their case is being reviewed by a specialized team and they will receive an update within 2 business days.
+Step 3: Submit a Compliance Referral Form via the internal compliance portal (compliance.intranet/referral).
+Step 4: Attach all relevant case notes, ticket history, and supporting documentation.
+Step 5: Send a notification email to compliance-escalations@company.com with the ticket number and referral category.
+Step 6: Do NOT close the ticket. Mark it as "Pending Compliance Review."
+
+---
+
+SECTION 6: ESCALATION TIMELINES
+
+  - Standard escalation (Tier 1 → Tier 2): Within current shift or 4 hours maximum
+  - Management escalation: Within 2 business hours of trigger event
+  - Compliance escalation: Immediately upon identification — same shift, no exceptions
+  - Trust & Safety escalation: Immediately, with phone call backup if portal is unavailable
+
+---
+
+SECTION 7: DOCUMENTATION REQUIREMENTS
+
+All escalations must be documented in the CRM with:
+  - Escalation reason (selected from approved category list)
+  - Timestamp of escalation decision
+  - Agent employee ID
+  - Name of receiving team or individual (if known)
+  - Summary of steps taken before escalation
+
+Failure to document an escalation is itself a policy violation, regardless of whether the escalation was handled correctly otherwise.
+
+---
+
+SECTION 8: AGENT PROTECTION
+
+Agents who escalate in good faith based on this policy are protected from disciplinary action even if the escalation later proves unnecessary. If you are uncertain whether a situation requires compliance escalation, escalate. It is always safer to escalate than to handle a compliance-sensitive matter independently.
+
+---
+
+END OF ESCALATION POLICY
+Questions: compliance@company.com | Compliance Hotline ext. 4200

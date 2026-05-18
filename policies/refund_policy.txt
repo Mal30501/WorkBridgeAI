@@ -1,0 +1,68 @@
+COMPANY REFUND POLICY
+Version: 3.2 | Effective Date: January 1, 2024
+Department: Customer Operations
+
+---
+
+SECTION 1: REFUND AUTHORIZATION LEVELS
+
+1.1 Standard Refunds (Under $100)
+Any customer support representative (Tier 1 or above) may approve refunds up to $100 without additional authorization. The representative must log the refund reason in the CRM system before processing.
+
+1.2 Mid-Range Refunds ($100 - $500)
+Refunds between $100 and $500 require approval from a Team Lead or Senior Support Specialist. The approving lead must document:
+  - Customer account standing
+  - Nature of the complaint
+  - Whether a prior refund was issued within the last 90 days
+
+1.3 High-Value Refunds (Over $500)
+Refunds exceeding $500 MUST be escalated to a Customer Operations Manager or above. No frontline agent or team lead may approve refunds over $500 without manager sign-off. Exceptions are not permitted. If a manager is unavailable, the case must be held and flagged in the escalation queue with a priority tag.
+
+1.4 Refunds Over $2,000
+Any refund request exceeding $2,000 requires dual approval: one Customer Operations Manager plus one Finance Department representative. A formal refund justification document must be submitted via the internal Finance portal within 24 hours of approval.
+
+---
+
+SECTION 2: INELIGIBLE REFUND SCENARIOS
+
+The following cases are NOT eligible for refunds under standard policy:
+  - Purchases made more than 90 days ago (without exception review)
+  - Digital products that have been fully downloaded and accessed
+  - Services that have been fully rendered and accepted
+  - Cases where the customer has previously received two or more refunds in a 12-month period
+
+Supervisors may request exception reviews for ineligible cases by submitting an Exception Review Form to the Customer Operations Director.
+
+---
+
+SECTION 3: REFUND PROCESSING TIMELINE
+
+Standard refunds: 3-5 business days to original payment method
+Credit card refunds: May take up to 7-10 business days depending on card issuer
+Bank transfer refunds: 5-7 business days
+
+---
+
+SECTION 4: DOCUMENTATION REQUIREMENTS
+
+All refunds, regardless of amount, require:
+  - Ticket ID associated with the refund request
+  - Agent employee ID
+  - Refund reason code (selected from approved list in CRM)
+  - Customer acknowledgment (email confirmation sent automatically)
+
+Refunds over $500 additionally require:
+  - Manager employee ID
+  - Written justification (minimum 50 words)
+  - Screenshot or attachment of supporting evidence
+
+---
+
+SECTION 5: FRAUD AND ABUSE
+
+If a refund request shows signs of fraud or policy abuse, the agent must immediately flag the account with a "Fraud Review" tag and escalate to the Trust & Safety team. Do not process the refund until cleared by Trust & Safety. Processing a refund on a flagged account without clearance is a policy violation subject to disciplinary action.
+
+---
+
+END OF REFUND POLICY
+Questions: customer-ops-policy@company.com

@@ -1,0 +1,101 @@
+PERSONAL INFORMATION & DATA PRIVACY POLICY
+Version: 2.1 | Effective Date: March 15, 2024
+Department: Legal & Compliance
+
+---
+
+SECTION 1: DEFINITION OF PERSONALLY IDENTIFIABLE INFORMATION (PII)
+
+Personally Identifiable Information (PII) refers to any data that can be used to identify, contact, or locate a specific individual. The company recognizes two categories of PII:
+
+1.1 Sensitive PII (Highest Protection Required)
+The following data elements are classified as Sensitive PII and require the highest level of protection:
+  - Social Security Numbers (SSN) or National Identification Numbers
+  - Passport numbers and government-issued ID numbers
+  - Driver's license numbers
+  - Financial account numbers (bank accounts, credit/debit card numbers)
+  - Biometric data (fingerprints, facial recognition data, retinal scans)
+  - Medical or health information (diagnoses, prescriptions, treatment records)
+  - Genetic information
+  - Authentication credentials (passwords, PINs, security questions/answers)
+  - Immigration status or citizenship documentation
+
+1.2 Standard PII (Elevated Protection Required)
+  - Full legal name combined with any other identifier
+  - Home address or mailing address
+  - Email address
+  - Phone numbers (mobile or home)
+  - Date of birth
+  - IP addresses associated with an individual
+  - Device identifiers linked to a person
+  - Location data (GPS, physical location records)
+  - Racial or ethnic origin
+  - Political opinions or religious beliefs
+
+---
+
+SECTION 2: PROHIBITED DATA HANDLING PRACTICES
+
+2.1 Support Ticket Restrictions
+Customer support tickets must NOT contain the following:
+  - Full Social Security Numbers (SSNs) — even partial SSNs (last 4 digits) are only acceptable when necessary for identity verification and must be removed from ticket records within 30 days.
+  - Full credit card or bank account numbers
+  - Passwords or authentication credentials of any kind
+  - Unencrypted medical records or diagnoses
+
+Agents who receive messages containing SSNs or financial account numbers must:
+  1. Immediately notify the customer NOT to share such information via ticket
+  2. Delete or redact the data from the ticket using the [REDACT] tool in the CRM
+  3. Log the incident using the Data Incident Report form within 4 hours
+
+2.2 Storage Restrictions
+Sensitive PII must not be stored in:
+  - Plain text files or unencrypted databases
+  - Email bodies or email attachments
+  - Chat logs or internal messaging platforms
+  - Support tickets or CRM notes (unless explicitly required and secured)
+  - Shared drives or public-facing storage systems
+
+---
+
+SECTION 3: DATA ACCESS CONTROLS
+
+Access to PII data is strictly role-based:
+  - Tier 1 Support: May view name, email, phone, and account ID only
+  - Tier 2 Support: May view all Standard PII with business justification
+  - Compliance Officers: May access Sensitive PII with documented purpose
+  - IT Security: Full access for audit and incident response only
+
+Sharing PII with third parties requires a signed Data Processing Agreement (DPA) on file. Sharing without a DPA is a compliance violation.
+
+---
+
+SECTION 4: DATA BREACH PROTOCOL
+
+In the event of a suspected PII data breach:
+  1. Immediately notify the Security Operations team (security@company.com or ext. 5500)
+  2. Do not attempt to investigate or contain the breach independently
+  3. Preserve all logs and do not delete or modify any records
+  4. The Security team will engage the Incident Response Plan within 1 hour
+
+Regulatory notification requirements:
+  - GDPR: Supervisory authority must be notified within 72 hours
+  - CCPA: Affected individuals notified without unreasonable delay
+  - HIPAA (if applicable): HHS notification within 60 days
+
+---
+
+SECTION 5: EMPLOYEE RESPONSIBILITIES
+
+All employees handling PII must:
+  - Complete annual PII and Data Privacy Training (mandatory)
+  - Never share PII via personal devices or personal email accounts
+  - Lock workstations when leaving desk (even briefly)
+  - Report suspicious requests for PII to the Privacy Officer immediately
+
+Violations of this policy may result in disciplinary action up to and including termination, and may result in personal civil or criminal liability.
+
+---
+
+END OF PII POLICY
+Questions: privacy@company.com | Privacy Officer ext. 4100
