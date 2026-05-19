@@ -13,6 +13,46 @@ from agents import guardrail_agent, planner_agent, retriever_agent, analyst_agen
 # ---------------------------------------------------------------------------
 # Page configuration (must be first Streamlit call)
 # ---------------------------------------------------------------------------
+def assess_policy_risk(user_query: str, source_files: list[str]) -> dict:
+    """Lightweight rule-based risk assessment for policy workflow visibility."""
+    text = user_query.lower()
+    files_text = " ".join(source_files).lower()
+
+    high_risk_terms = [
+        "ssn", "social security", "data breach", "breach", "gdpr", "ccpa",
+        "legal", "lawsuit", "subpoena", "fraud", "identity theft",
+        "financial account", "credit card", "password", "medical"
+    ]
+
+    medium_risk_terms = [
+        "refund over", "over $500", "$500", "compliance", "escalate",
+        "manager", "chargeback", "vip", "sensitive"
+    ]
+
+    escalation_terms = [
+        "ssn", "social security", "data breach", "breach", "gdpr", "ccpa",
+        "legal", "lawsuit", "subpoena", "fraud", "identity theft",
+        "over $500", "$500", "compliance", "chargeback"
+    ]
+
+    if any(term in text for term in high_risk_terms) or "pii_policy" in files_text:
+        level = "HIGH"
+        reason = "Sensitive data, legal, compliance, or privacy-related policy context detected."
+    elif any(term in text for term in medium_risk_terms) or "escalation_policy" in files_text:
+        level = "MEDIUM"
+        reason = "The request may involve approval thresholds, escalation, or compliance review."
+    else:
+        level = "LOW"
+        reason = "The request appears to be a standard policy question with limited operational risk."
+
+    escalation_recommended = any(term in text for term in escalation_terms)
+
+    return {
+        "level": level,
+        "reason": reason,
+        "escalation_recommended": escalation_recommended,
+    }
+
 st.set_page_config(
     page_title="WorkBridge AI",
     page_icon="🔗",
@@ -65,7 +105,13 @@ html, body, [class*="css"] {
     padding: 14px 18px;
     margin-bottom: 10px;
     font-size: 0.9rem;
+    transition: all 0.18s ease-in-out;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);        
 }
+.agent-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
+}            
 .agent-card.success { border-left-color: #10b981; }
 .agent-card.warning { border-left-color: #f59e0b; }
 .agent-card.error   { border-left-color: #ef4444; }
@@ -96,6 +142,34 @@ html, body, [class*="css"] {
     font-size: 1rem;
     line-height: 1.7;
     color: #14532d;
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.08);
+    transition: all 0.18s ease-in-out;        
+}
+.risk-card {
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin: 14px 0;
+    font-size: 0.92rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 3px 10px rgba(15, 23, 42, 0.05);
+}
+
+.risk-low {
+    background: #f0fdf4;
+    border-left: 5px solid #16a34a;
+    color: #14532d;
+}
+
+.risk-medium {
+    background: #fffbeb;
+    border-left: 5px solid #f59e0b;
+    color: #78350f;
+}
+
+.risk-high {
+    background: #fef2f2;
+    border-left: 5px solid #ef4444;
+    color: #7f1d1d;
 }
 
 /* ---------- Source snippet ---------- */
@@ -242,12 +316,16 @@ st.markdown("""
 # ---------------------------------------------------------------------------
 col1, col2 = st.columns([3, 1])
 
-prefill = st.session_state.pop("prefill_query", "")
+if "query_text" not in st.session_state:
+    st.session_state["query_text"] = ""
+
+if "prefill_query" in st.session_state:
+    st.session_state["query_text"] = st.session_state.pop("prefill_query")
 
 with col1:
     user_query = st.text_area(
         "Ask a policy question",
-        value=prefill,
+        key="query_text",
         height=100,
         placeholder="e.g. Can I approve a refund over $500? / What counts as PII?",
         label_visibility="collapsed",
@@ -486,11 +564,42 @@ if run_button:
         else:
             st.error("🔴 System Confidence: Review Recommended — retrieved context may not fully support the answer.")
 
+        risk = assess_policy_risk(user_query, retriever.files_searched)
+
+        risk_class = {
+            "LOW": "risk-low",
+            "MEDIUM": "risk-medium",
+            "HIGH": "risk-high",
+        }.get(risk["level"], "risk-medium")
+
+        risk_icon = {
+            "LOW": "🟢",
+            "MEDIUM": "🟡",
+            "HIGH": "🔴",
+        }.get(risk["level"], "🟡")
+
+        st.markdown(
+            f"""
+            <div class="risk-card {risk_class}">
+                <b>{risk_icon} Policy Risk Level: {risk["level"]}</b><br>
+                {html.escape(risk["reason"])}
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        if risk["escalation_recommended"]:
+            st.warning(
+                "⚠️ Escalation Recommended: This request may require manager, compliance, "
+                "security, or legal review depending on the exact situation."
+            )
+
         with st.expander("Why this answer was generated"):
             st.write(f"Relevant policy files searched: {', '.join(retriever.files_searched)}")
             st.write(f"Policy sections retrieved: {len(retriever.chunks)}")
             st.write(f"Critic recommendation: {critic.recommendation}")
             st.write(f"Critic confidence: {critic.confidence}")
+            st.write(f"Policy risk level: {risk['level']}")
             st.write(
                 "The answer was generated only after the Guardrail, Planner, Retriever, Analyst, "
                 "Critic, and Response agents completed the controlled workflow."
