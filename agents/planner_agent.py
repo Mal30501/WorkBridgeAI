@@ -2,6 +2,7 @@
 Planner agent.
 
 Turns the user's policy question into a short retrieval and analysis plan.
+Infers the likely policy domain from the question before planning.
 """
 
 from dataclasses import dataclass, field
@@ -11,64 +12,78 @@ from utils.openai_helper import chat_completion
 
 SYSTEM_PROMPT = """You are a planning assistant for an enterprise policy Q&A system.
 
-Create a short plan for answering the user's policy question.
+Before creating a plan, infer the most likely policy domain from the employee's question.
+Common domains include: refunds, PII and data privacy, case escalation, PTO and leave, expense reimbursement, business travel, remote work, and equipment.
 
-Output ONLY a numbered list of 2-4 steps.
+Then create a short, focused plan for answering the question.
 
-Good format:
-1. Identify the relevant policy domain.
-2. Retrieve the policy sections that mention the specific rule or threshold.
-3. Check whether the user's scenario is directly covered by the policy.
-4. Summarize the applicable rule clearly.
+Output ONLY in this format:
+DOMAIN: [inferred policy domain, e.g. "PTO and Leave Policy" or "Expense Reimbursement Policy"]
+PLAN:
+1. [step]
+2. [step]
+3. [step]
 
-Do not answer the question itself.
-Keep each step short and practical."""
+Rules:
+- Infer the domain even when the question is indirect or conversational (e.g. "Can I take next Friday off?" → PTO and Leave Policy).
+- Keep each plan step short and practical.
+- Do not answer the question itself.
+- 2–4 steps is sufficient."""
 
 
 @dataclass
 class PlannerResult:
+    domain: str = ""
     steps: list[str] = field(default_factory=list)
     raw_output: str = ""
     error: str = ""
 
 
-def _parse_steps(raw: str) -> list[str]:
-    """Extract numbered steps from the model response."""
+def _parse_output(raw: str) -> tuple[str, list[str]]:
+    """Extract domain and numbered steps from the model response."""
+    domain = ""
     steps = []
+    in_plan = False
 
     for line in raw.splitlines():
         line = line.strip()
-
-        if not line or not line[0].isdigit():
+        if not line:
             continue
 
-        if "." in line:
-            step = line.split(".", 1)[1].strip()
-        elif ")" in line:
-            step = line.split(")", 1)[1].strip()
-        else:
-            step = line
+        if line.upper().startswith("DOMAIN:"):
+            domain = line.split(":", 1)[1].strip()
+            continue
 
-        if step:
-            steps.append(step)
+        if line.upper().startswith("PLAN:"):
+            in_plan = True
+            continue
 
-    return steps
+        if in_plan and line and line[0].isdigit():
+            sep = "." if "." in line else ")" if ")" in line else None
+            if sep:
+                step = line.split(sep, 1)[1].strip()
+            else:
+                step = line
+            if step:
+                steps.append(step)
+
+    return domain, steps
 
 
 def run(user_query: str) -> PlannerResult:
-    """Generate a short plan for retrieving and analyzing policy context."""
+    """Generate a domain-aware plan for retrieving and analyzing policy context."""
     try:
         raw = chat_completion(
             system_prompt=SYSTEM_PROMPT,
-            user_message=f"Policy question: {user_query}",
+            user_message=f"Employee question: {user_query}",
         )
 
-        steps = _parse_steps(raw)
+        domain, steps = _parse_output(raw)
 
         if not steps:
             steps = [raw.strip()]
 
-        return PlannerResult(steps=steps, raw_output=raw)
+        return PlannerResult(domain=domain, steps=steps, raw_output=raw)
 
     except Exception as exc:
         return PlannerResult(
