@@ -2,7 +2,7 @@
 
 **Guardrailed Multi-Agent Enterprise Workflow Assistant**
 
-WorkBridge is a production-style prototype that answers employee questions about company policies using a coordinated pipeline of AI agents. Every answer is grounded in official internal policy documents — the system is designed to retrieve before it answers, validate before it responds, and block unsafe inputs before they reach the model.
+WorkBridge AI is a guardrailed multi-agent enterprise assistant that answers employee policy and workflow questions using retrieved internal policy documents. The system supports policy domains such as refunds, PII handling, escalation workflows, PTO/leave, remote work, equipment usage, and expense reimbursement.
 
 ---
 
@@ -44,7 +44,7 @@ User Query
     Final Answer (shown in UI)
 ```
 
-Each agent is a separate Python module. The Streamlit app (`app.py`) orchestrates them in sequence and displays each agent's output in the UI for full traceability.
+Each agent is implemented as a separate Python module. The Streamlit application (`app.py`) orchestrates the workflow sequentially, where each agent passes structured outputs downstream to the next stage in the pipeline. The UI exposes intermediate reasoning and retrieval steps for explainability and traceability.
 
 ---
 
@@ -54,7 +54,7 @@ Each agent is a separate Python module. The Streamlit app (`app.py`) orchestrate
 |---|---|---|
 | **Guardrail** | Input safety | Regex-based detection of prompt injection, jailbreak phrases, off-topic requests. Blocks before any LLM call. |
 | **Planner** | Query decomposition | Uses GPT-4o-mini to break the question into 2–4 actionable retrieval steps. Makes the plan visible in the trace. |
-| **Retriever** | Policy search | Keyword-overlap scoring over chunked local `.txt` policy files. No vector DB required. Returns top-K scored chunks. |
+| **Retriever** | Policy search | Lightweight intent-aware retrieval over chunked local `.txt` policy files using keyword overlap, synonym expansion, and policy-domain matching. Returns top-K scored chunks. |
 | **Analyst** | Answer generation | RAG-style generation. System prompt explicitly forbids using knowledge outside the provided context. |
 | **Critic** | Quality validation | Structured evaluation: grounding, accuracy, completeness, confidence, recommendation (APPROVE / APPROVE WITH CAVEAT / REVISE). |
 | **Response** | Output formatting | Formats the final answer for a non-technical employee. Appends confidence warnings or caveats as needed. |
@@ -63,26 +63,35 @@ Each agent is a separate Python module. The Streamlit app (`app.py`) orchestrate
 
 ## 📁 Project Structure
 
-```
+```text
 WorkBridgeAI/
 │
 ├── agents/
-│   ├── guardrail_agent.py   # Input safety & injection detection
-│   ├── planner_agent.py     # Query decomposition
-│   ├── retriever_agent.py   # Local policy document search
-│   ├── analyst_agent.py     # Grounded answer generation (RAG)
-│   ├── critic_agent.py      # Answer validation
-│   └── response_agent.py   # Final answer formatting
+│   ├── guardrail_agent.py          # Input safety & injection detection
+│   ├── planner_agent.py            # Query decomposition & domain inference
+│   ├── retriever_agent.py          # Intent-aware local policy retrieval
+│   ├── analyst_agent.py            # Grounded answer generation (RAG)
+│   ├── critic_agent.py             # Answer validation & confidence scoring
+│   └── response_agent.py           # Final answer formatting
 │
 ├── policies/
-│   ├── refund_policy.txt       # Refund authorization rules
-│   ├── pii_policy.txt          # PII definitions and data handling
-│   └── escalation_policy.txt   # Escalation triggers and procedures
+│   ├── refund_policy.txt                   # Refund authorization rules
+│   ├── pii_policy.txt                      # PII definitions & data handling
+│   ├── escalation_policy.txt               # Escalation procedures
+│   ├── hr_pto_policy.txt                   # PTO & leave policy
+│   ├── remote_work_equipment_policy.txt    # Remote work & equipment usage
+│   └── expense_travel_policy.txt           # Expense reimbursement & travel policy
 │
 ├── utils/
-│   └── openai_helper.py    # Centralised OpenAI client wrapper
+│   └── openai_helper.py            # Centralised OpenAI client wrapper
 │
-├── app.py                  # Streamlit UI & pipeline orchestration
+├── screenshots/
+│   ├── dashboard.png
+│   ├── agent-trace.png
+│   ├── final-answer.png
+│   └── guardrail-block.png
+│
+├── app.py                          # Streamlit UI & orchestration layer
 ├── requirements.txt
 ├── .env.example
 └── README.md
@@ -188,22 +197,23 @@ Every answer is reviewed by the Critic agent before it reaches the user. Low-con
 | Can I approve a refund over $500? | Refund Policy |
 | Can customer SSNs be stored in support tickets? | PII Policy |
 | When should a case be escalated to compliance? | Escalation Policy |
-| What information is considered PII? | PII Policy |
+| Can I take PTO next Friday? | PTO / Leave Policy |
+| Can I expense a client dinner? | Expense Reimbursement Policy |
+| Can I request a second monitor for remote work? | Remote Work Policy |
 | What if a customer threatens legal action? | Escalation Policy |
-| How long does a standard refund take? | Refund Policy |
 | What happens if I suspect a data breach? | PII + Escalation Policy |
 
 ---
 
 ## 🔮 Future Improvements
 
-- **Vector search**: Replace keyword scoring with embeddings (e.g. `sentence-transformers` + FAISS) for semantic retrieval
-- **More policy documents**: Add HR, IT security, travel expense, acceptable use policies
-- **Conditional workflow orchestration**: Add branching logic such as re-retrieval when the Critic recommends revision
-- **Conversation memory**: Allow multi-turn follow-up questions within a session
-- **Audit logging**: Log all queries and agent outputs to a database for compliance review
-- **User roles**: Show/hide certain policy sections based on employee role
-- **PDF support**: Ingest scanned or formatted PDF policy documents
+- **Embedding-based retrieval**: Explore semantic retrieval using embeddings and FAISS for improved paraphrase handling
+- **Conditional orchestration**: Add branching workflows such as automatic re-retrieval when the Critic recommends revision
+- **Additional policy domains**: Expand the knowledge base with HR, IT security, acceptable use, and onboarding policies
+- **Conversation memory**: Support multi-turn follow-up questions within a session
+- **Audit logging**: Store workflow traces and decisions for compliance review
+- **Role-aware responses**: Tailor policy visibility based on employee role or department
+- **PDF ingestion**: Parse structured PDF policy documents directly into the retrieval pipeline
 
 ---
 
@@ -221,7 +231,7 @@ Every answer is reviewed by the Critic agent before it reaches the user. Low-con
 
 ---
 
-### Retrieved Policy Context & Final Answer
+### Final Answer, Confidence & Policy Risk Classification
 
 ![Final Answer](screenshots/final-answer.png)
 
@@ -230,6 +240,17 @@ Every answer is reviewed by the Critic agent before it reaches the user. Low-con
 ### Guardrail Injection Blocking
 
 ![Guardrail Blocking](screenshots/guardrail-block.png)
+
+## 🧠 Design Philosophy
+
+WorkBridge AI intentionally prioritises:
+
+- explainability over autonomous behaviour
+- grounded retrieval over speculative generation
+- lightweight orchestration over heavy infrastructure
+- practical enterprise workflows over experimental agent autonomy
+
+The goal was to build a safe, explainable, and deployable enterprise AI workflow assistant within a practical development timeline.
 
 ## 🧑‍💻 Built With
 
