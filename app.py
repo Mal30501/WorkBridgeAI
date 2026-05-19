@@ -285,6 +285,7 @@ with st.sidebar:
         "How long does a standard refund take?",
         "What if a customer threatens legal action?",
         "A customer sent their SSN in a support ticket. What should I do?",
+        "Can I request a second monitor for remote work?",
     ]
 
     for q in sample_questions:
@@ -389,13 +390,21 @@ if run_button:
                     st.markdown(f'<div class="agent-card error">❌ {planner.error}</div>', unsafe_allow_html=True)
                 else:
                     steps_html = "".join(
-                        f"<div style='margin-bottom:6px'><b>{i}.</b> {step}</div>"
+                        f"<div style='margin-bottom:6px'><b>{i}.</b> {html.escape(step)}</div>"
                         for i, step in enumerate(planner.steps, 1)
                     )
+
+                    domain_html = ""
+                    if getattr(planner, "domain", ""):
+                        domain_html = (
+                            f"<div style='margin-bottom:10px;color:#6b7280;font-size:0.85rem'>"
+                            f"🗂️ <b>Inferred domain:</b> {html.escape(planner.domain)}</div>"
+                        )
+
                     st.markdown(
                         f'<div class="agent-card success">'
                         f'<b>Plan</b> <span class="badge badge-ok">{len(planner.steps)} steps</span><br><br>'
-                        f'{steps_html}</div>',
+                        f'{domain_html}{steps_html}</div>',
                         unsafe_allow_html=True,
                     )
 
@@ -413,10 +422,15 @@ if run_button:
                     st.markdown(f'<div class="agent-card error">❌ {retriever.error}</div>', unsafe_allow_html=True)
                 else:
                     files_str = ", ".join(retriever.files_searched)
+
+                    intent_html = ""
+                    if getattr(retriever, "matched_intent", ""):
+                        intent_html = f"<br><b>Intent matched:</b> {html.escape(retriever.matched_intent)}"
+
                     st.markdown(
                         f'<div class="agent-card success">'
-                        f'<b>Files searched:</b> <code>{files_str}</code><br>'
-                        f'<b>Chunks retrieved:</b> {len(retriever.chunks)}'
+                        f'<b>Files searched:</b> <code>{html.escape(files_str)}</code><br>'
+                        f'<b>Chunks retrieved:</b> {len(retriever.chunks)}{intent_html}'
                         f'</div>',
                         unsafe_allow_html=True,
                     )
@@ -433,7 +447,7 @@ if run_button:
                 source_display = chunk.source_file.replace("_", " ").replace(".txt", "").title()
                 st.markdown(
                     f'<div class="source-label">Source {i} · {source_display} · Score: {chunk.score}</div>'
-                    f'<div class="source-snippet">{chunk.content[:420]}{"…" if len(chunk.content) > 420 else ""}</div>',
+                    f'<div class="source-snippet">{html.escape(chunk.content[:420])}{"…" if len(chunk.content) > 420 else ""}</div>',
                     unsafe_allow_html=True,
                 )
 
@@ -442,7 +456,11 @@ if run_button:
     # =========================================================
     status_placeholder.info("🧠 **Step 4/6 — Analyst Agent** generating grounded answer…")
 
-    analyst = analyst_agent.run(user_query, retriever.chunks)
+    analyst = analyst_agent.run(
+        user_query,
+        retriever.chunks,
+        planner_domain=getattr(planner, "domain", ""),
+    )
 
     with results_container:
         with left_col:
@@ -596,6 +614,7 @@ if run_button:
 
         with st.expander("Why this answer was generated"):
             st.write(f"Relevant policy files searched: {', '.join(retriever.files_searched)}")
+            st.write(f"Matched policy intent: {getattr(retriever, 'matched_intent', '') or 'General policy search'}")
             st.write(f"Policy sections retrieved: {len(retriever.chunks)}")
             st.write(f"Critic recommendation: {critic.recommendation}")
             st.write(f"Critic confidence: {critic.confidence}")
