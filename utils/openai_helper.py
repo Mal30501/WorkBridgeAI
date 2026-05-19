@@ -1,51 +1,55 @@
 """
-utils/openai_helper.py
+OpenAI helper.
 
-Centralised wrapper around the OpenAI client.
-Keeps API key loading and basic error handling in one place.
+Centralizes API key loading and OpenAI chat calls.
 """
 
 import os
-from openai import OpenAI
+
 from dotenv import load_dotenv
+from openai import OpenAI
+
 
 load_dotenv()
 
+
 def get_client() -> OpenAI:
-    """Return an authenticated OpenAI client, raising early if key is missing."""
+    """Create an OpenAI client using the API key from environment variables."""
     api_key = os.getenv("OPENAI_API_KEY")
+
     if not api_key:
         raise EnvironmentError(
-            "OPENAI_API_KEY is not set. "
-            "Copy .env.example to .env and add your key."
+            "OPENAI_API_KEY is not set. Add it to your .env file or Streamlit secrets."
         )
-    return OpenAI(api_key=api_key)
+
+    return OpenAI(
+        api_key=api_key,
+        timeout=30.0,
+        max_retries=2,
+    )
 
 
-def chat_completion(system_prompt: str, user_message: str, model: str = "gpt-4o-mini") -> str:
-    """
-    Send a single-turn chat completion request.
-
-    Args:
-        system_prompt: Instructions that shape the model's behaviour.
-        user_message:  The actual content to process.
-        model:         OpenAI model name (default gpt-4o-mini for cost efficiency).
-
-    Returns:
-        The assistant's reply as a plain string.
-
-    Raises:
-        EnvironmentError: if the API key is missing.
-        Exception: re-raised from the OpenAI SDK for the caller to handle.
-    """
+def chat_completion(
+    system_prompt: str,
+    user_message: str,
+    model: str = "gpt-4o-mini",
+) -> str:
+    """Send a single chat request and return the assistant response."""
     client = get_client()
+
     response = client.chat.completions.create(
         model=model,
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user",   "content": user_message},
+            {"role": "user", "content": user_message},
         ],
-        temperature=0.2,   # Low temperature keeps answers grounded and consistent
+        temperature=0.2,
         max_tokens=1024,
     )
-    return response.choices[0].message.content.strip()
+
+    content = response.choices[0].message.content
+
+    if not content:
+        return ""
+
+    return content.strip()
