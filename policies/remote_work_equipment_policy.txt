@@ -1,0 +1,87 @@
+REMOTE WORK & EQUIPMENT POLICY
+Version: 1.6 | Effective Date: March 1, 2024
+Department: Human Resources & IT
+
+---
+
+SECTION 1: REMOTE WORK ELIGIBILITY AND ARRANGEMENTS
+
+1.1 Eligibility
+Remote work is a privilege, not an entitlement, and is available to employees whose roles and performance support a remote or hybrid arrangement. Eligibility is determined by the employee's manager in consultation with HR.
+
+New employees in their first 90 days are generally expected to work on-site to support onboarding and team integration. Exceptions require VP-level approval.
+
+1.2 Work Arrangement Types
+  - Fully On-Site: Employee works from a company-designated office location five days per week.
+  - Hybrid: Employee works from home on designated days agreed upon with their manager, typically 2–3 days per week.
+  - Fully Remote: Employee has no required on-site presence. Available only for pre-approved roles. Requires VP-level sign-off and a signed Remote Work Agreement.
+
+1.3 Request and Approval Process
+Employees requesting a remote or hybrid arrangement must submit a Remote Work Request through the HR portal. Requests are reviewed within 10 business days. Approved arrangements are documented with a start date and review period (typically 90 days for first-time arrangements).
+
+Arrangements may be modified or revoked at any time by the manager or HR if business needs change or performance standards are not maintained.
+
+---
+
+SECTION 2: REMOTE WORK EXPECTATIONS
+
+2.1 Availability and Responsiveness
+Remote employees must be available and responsive during standard business hours (9 AM–5 PM local time, or as agreed with their manager). Employees are expected to:
+  - Attend all required meetings on video (camera on by default unless circumstances prevent it)
+  - Respond to messages and emails within 2 hours during working hours
+  - Maintain a professional background or use an approved virtual background for video calls
+
+2.2 Workspace Requirements
+Employees are responsible for maintaining a safe, distraction-free, and ergonomically adequate workspace. The company does not cover home office rent, internet service provider costs, or utilities. A one-time home office stipend of $300 is available for newly approved fully-remote employees; contact HR to request.
+
+2.3 Time Zone and Schedule Transparency
+Employees working in a different time zone than their team must have explicit manager approval and must keep their calendar accurately updated to reflect their actual working hours. Core overlap hours agreed with the manager must be honored.
+
+---
+
+SECTION 3: EQUIPMENT AND ASSET MANAGEMENT
+
+3.1 Company-Provided Equipment
+The company provides all full-time employees with a laptop and necessary peripherals (mouse, keyboard, headset) as standard. Equipment is issued through IT and tracked in the asset management system. Employees are responsible for the safekeeping of company-issued equipment.
+
+3.2 Additional Equipment Requests
+Requests for additional equipment (external monitors, standing desks, docking stations, etc.) must be submitted via an IT equipment request ticket. Approvals are subject to budget availability:
+  - Requests under $200: Direct manager approval.
+  - Requests $200–$500: Manager plus department head approval.
+  - Requests over $500: VP-level approval required before the order is placed.
+
+3.3 Personal Device Use (BYOD)
+Employees using personal devices to access company systems must enroll those devices in the company MDM (Mobile Device Management) program and comply with the Acceptable Use Policy. Unenrolled personal devices may not access company email, internal applications, or confidential data.
+
+3.4 Equipment Return
+Upon termination of employment (voluntary or involuntary), all company-issued equipment must be returned within 5 business days. Failure to return equipment may result in the cost of the equipment being deducted from the final paycheck, to the extent permitted by applicable law.
+
+3.5 Damage and Loss Reporting
+Accidental damage must be reported to IT within 24 hours of the incident. Intentional damage or gross negligence may result in the employee being held financially liable. Lost or stolen equipment must be reported to IT and Security immediately.
+
+---
+
+SECTION 4: ACCEPTABLE USE OF COMPANY SYSTEMS AND DATA
+
+4.1 Authorized Use
+Company devices and systems are provided for business purposes. Limited, reasonable personal use is permitted provided it does not interfere with work performance or create security risks. Employees have no expectation of privacy on company-issued devices or systems.
+
+4.2 Prohibited Activities
+The following are prohibited on company-issued devices or company networks:
+  - Accessing or downloading illegal, adult, or discriminatory content
+  - Installing unauthorized software or browser extensions
+  - Sharing credentials with colleagues or family members
+  - Circumventing IT security controls, VPN policies, or endpoint protection software
+  - Using company resources for personal commercial activities or side businesses
+  - Connecting company devices to unsecured public Wi-Fi without using the company VPN
+
+4.3 VPN Requirement
+Employees accessing internal company systems, cloud applications, or confidential data from outside a company office must connect via the company VPN. The IT helpdesk can assist with VPN configuration and access issues.
+
+4.4 Software Installation Policy
+Only software approved on the IT whitelist may be installed on company devices. Requests for new software must be submitted to IT for security review before installation. Unauthorized software installation is a policy violation and may trigger a security audit.
+
+---
+
+END OF REMOTE WORK & EQUIPMENT POLICY
+Questions: it-helpdesk@company.com | hr-policy@company.com
