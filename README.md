@@ -1,8 +1,8 @@
-# 🛡️ PolicyPilot AI
+# 🔗 WorkBridge AI
 
-**Guardrailed Multi-Agent Enterprise Policy Assistant**
+**Guardrailed Multi-Agent Enterprise Workflow Assistant**
 
-PolicyPilot is a production-style prototype that answers employee questions about company policies using a coordinated pipeline of AI agents. Every answer is grounded in official internal policy documents — the system is designed to retrieve before it answers, validate before it responds, and block unsafe inputs before they reach the model.
+WorkBridge is a production-style prototype that answers employee questions about company policies using a coordinated pipeline of AI agents. Every answer is grounded in official internal policy documents — the system is designed to retrieve before it answers, validate before it responds, and block unsafe inputs before they reach the model.
 
 ---
 
@@ -64,7 +64,7 @@ Each agent is a separate Python module. The Streamlit app (`app.py`) orchestrate
 ## 📁 Project Structure
 
 ```
-policypilot/
+WorkBridgeAI/
 │
 ├── agents/
 │   ├── guardrail_agent.py   # Input safety & injection detection
@@ -95,8 +95,8 @@ policypilot/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourname/policypilot.git
-cd policypilot
+git clone https://github.com/yourname/WorkBridgeAI.git
+cd WorkBridgeAI
 ```
 
 ### 2. Create a virtual environment
@@ -199,7 +199,7 @@ Every answer is reviewed by the Critic agent before it reaches the user. Low-con
 
 - **Vector search**: Replace keyword scoring with embeddings (e.g. `sentence-transformers` + FAISS) for semantic retrieval
 - **More policy documents**: Add HR, IT security, travel expense, acceptable use policies
-- **LangGraph orchestration**: Implement conditional branching (e.g. re-retrieve if Critic recommends REVISE)
+- **Conditional workflow orchestration**: Add branching logic such as re-retrieval when the Critic recommends revision
 - **Conversation memory**: Allow multi-turn follow-up questions within a session
 - **Audit logging**: Log all queries and agent outputs to a database for compliance review
 - **User roles**: Show/hide certain policy sections based on employee role
@@ -209,14 +209,27 @@ Every answer is reviewed by the Critic agent before it reaches the user. Low-con
 
 ## 📸 Screenshots
 
-*[Add screenshots of the Streamlit UI here after running the app]*
+### Main Dashboard
 
-- Main query interface with sidebar
-- Agent trace panel showing all 6 steps
-- Retrieved source snippets panel
-- Final answer with confidence indicators
+![Main Dashboard](screenshots/dashboard.png)
 
 ---
+
+### Multi-Agent Workflow Trace
+
+![Agent Workflow](screenshots/agent-trace.png)
+
+---
+
+### Retrieved Policy Context & Final Answer
+
+![Final Answer](screenshots/final-answer.png)
+
+---
+
+### Guardrail Injection Blocking
+
+![Guardrail Blocking](screenshots/guardrail-block.png)
 
 ## 🧑‍💻 Built With
 
@@ -228,4 +241,4 @@ Every answer is reviewed by the Critic agent before it reaches the user. Low-con
 
 ## ⚖️ Disclaimer
 
-PolicyPilot is a prototype demonstration. Answers are generated from local policy documents and should be verified with the appropriate department before taking action on sensitive matters.
+WorkBridge is just a prototype demonstration. Answers are generated from local policy documents and should be verified with the appropriate department before taking action on sensitive matters.
