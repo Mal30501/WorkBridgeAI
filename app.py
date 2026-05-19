@@ -1,11 +1,11 @@
 """
-app.py — PolicyPilot AI
+app.py — WorkBridge AI
 Main Streamlit application.
 Orchestrates the multi-agent pipeline and renders the UI.
 """
 
+import html
 import streamlit as st
-import time
 
 # Agent imports
 from agents import guardrail_agent, planner_agent, retriever_agent, analyst_agent, critic_agent, response_agent
@@ -14,8 +14,8 @@ from agents import guardrail_agent, planner_agent, retriever_agent, analyst_agen
 # Page configuration (must be first Streamlit call)
 # ---------------------------------------------------------------------------
 st.set_page_config(
-    page_title="PolicyPilot AI",
-    page_icon="🛡️",
+    page_title="WorkBridge AI",
+    page_icon="🔗",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -177,8 +177,8 @@ html, body, [class*="css"] {
 with st.sidebar:
     st.markdown("""
     <div class="sidebar-section">
-        <h4>🛡️ About PolicyPilot</h4>
-        <p>PolicyPilot is a multi-agent AI assistant that answers company policy questions using only official internal documents.</p>
+        <h4>🔗 About WorkBridge AI</h4>
+<p>WorkBridge AI is a guardrailed multi-agent assistant that helps employees answer policy and compliance questions using internal policy documents.</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -210,6 +210,7 @@ with st.sidebar:
         "What happens if I suspect a data breach?",
         "How long does a standard refund take?",
         "What if a customer threatens legal action?",
+        "A customer sent their SSN in a support ticket. What should I do?",
     ]
 
     for q in sample_questions:
@@ -219,8 +220,8 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("""
     <div style="font-size:0.75rem; color:#94a3b8; text-align:center">
-        PolicyPilot AI · Enterprise Prototype<br>
-        Powered by GPT-4o-mini + LangGraph pattern
+        WorkBridge AI · Enterprise Prototype<br>
+        Powered by GPT-4o-mini + controlled multi-agent orchestration
     </div>
     """, unsafe_allow_html=True)
 
@@ -230,8 +231,8 @@ with st.sidebar:
 st.markdown("""
 <div class="pilot-header">
     <div>
-        <h1>🛡️ PolicyPilot AI</h1>
-        <p>Guardrailed Multi-Agent Enterprise Policy Assistant — answers grounded in official company documents</p>
+        <h1>🔗 WorkBridge AI</h1>
+        <p>Guardrailed Multi-Agent Enterprise Workflow Assistant — answers policy questions using retrieved internal documents</p>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -374,7 +375,7 @@ if run_button:
                     st.markdown(
                         f'<div class="agent-card success">'
                         f'<b>Draft answer generated</b> <span class="badge badge-ok">GROUNDED</span><br><br>'
-                        f'{analyst.answer}'
+                        f'{html.escape(analyst.answer)}'
                         f'</div>',
                         unsafe_allow_html=True,
                     )
@@ -472,9 +473,28 @@ if run_button:
         st.write(analyst.answer)
     else:
         st.markdown(
-            f'<div class="final-answer">{response.final_answer}</div>',
+            f'<div class="final-answer">{html.escape(response.final_answer).replace(chr(10), "<br>")}</div>',
             unsafe_allow_html=True,
         )
+
+        confidence = critic.confidence.upper() if not critic.error else "UNKNOWN"
+
+        if confidence == "HIGH":
+            st.success("🟢 System Confidence: High — answer is strongly supported by retrieved policy context.")
+        elif confidence == "MEDIUM":
+            st.warning("🟡 System Confidence: Medium — answer is mostly supported, but review may be helpful.")
+        else:
+            st.error("🔴 System Confidence: Review Recommended — retrieved context may not fully support the answer.")
+
+        with st.expander("Why this answer was generated"):
+            st.write(f"Relevant policy files searched: {', '.join(retriever.files_searched)}")
+            st.write(f"Policy sections retrieved: {len(retriever.chunks)}")
+            st.write(f"Critic recommendation: {critic.recommendation}")
+            st.write(f"Critic confidence: {critic.confidence}")
+            st.write(
+                "The answer was generated only after the Guardrail, Planner, Retriever, Analyst, "
+                "Critic, and Response agents completed the controlled workflow."
+            )
 
     # Confidence warning banner
     if not critic.error and critic.confidence.upper() == "LOW":
@@ -492,7 +512,7 @@ else:
     # Landing state
     st.markdown("""
     <div style="text-align:center; padding: 60px 20px; color: #94a3b8;">
-        <div style="font-size: 3rem; margin-bottom: 16px">🛡️</div>
+        <div style="font-size: 3rem; margin-bottom: 16px">🔗</div>
         <div style="font-size: 1.1rem; font-weight: 500; color: #64748b; margin-bottom: 8px">
             Ask a policy question to get started
         </div>
