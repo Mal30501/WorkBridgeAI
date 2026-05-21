@@ -147,12 +147,24 @@ The app will open at `http://localhost:8501`.
 
 ## 🌐 Deployment
 
-### Streamlit Community Cloud (free, recommended for demos)
+### AWS EC2 Deployment
 
-1. Push the repository to GitHub (ensure `.env` is in `.gitignore`)
-2. Go to [share.streamlit.io](https://share.streamlit.io)
-3. Connect your GitHub repo and select `app.py` as the entry point
-4. Add `OPENAI_API_KEY` in the **Secrets** panel (Settings → Secrets)
+The application is deployed on an AWS EC2 instance using Streamlit as the frontend interface.
+
+### Deployment Steps
+
+1. Created an EC2 instance running Amazon Linux 2023
+2. Configured inbound security group rules for:
+   - Port 22 (SSH)
+   - Port 8501 (Streamlit)
+3. Cloned the GitHub repository onto the EC2 instance
+4. Created and activated a Python virtual environment
+5. Installed dependencies from `requirements.txt`
+6. Added the OpenAI API key securely through a local `.env` file
+7. Started the Streamlit application using:
+
+```bash
+streamlit run app.py --server.address 0.0.0.0 --server.port 8501
 
 ### Other options
 
