@@ -165,6 +165,15 @@ The application is deployed on an AWS EC2 instance using Streamlit as the fronte
 
 ```bash
 streamlit run app.py --server.address 0.0.0.0 --server.port 8501
+```
+
+8. Used `tmux` to keep the application running persistently in the background
+
+### Live Demo
+
+```text
+http://34.201.16.72:8501
+```
 
 ### Other options
 
